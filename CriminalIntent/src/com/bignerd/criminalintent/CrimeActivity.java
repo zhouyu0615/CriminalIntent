@@ -14,9 +14,15 @@ public class CrimeActivity extends SingleFragmentActivity {
 	@Override
 	protected Fragment createFragment() {
 		// TODO Auto-generated method stub
-		UUID crimeId = (UUID) getIntent().getSerializableExtra(
-				CrimeFragment.EXTRA_CRIME_ID);
-
-		return CrimeFragment.newInstance(crimeId);
+		return null;
 	}
+
+//	@Override
+//	protected Fragment createFragment() {
+//		// TODO Auto-generated method stub
+//		UUID crimeId = (UUID) getIntent().getSerializableExtra(
+//				CrimeFragment.EXTRA_CRIME_ID);
+//
+//		return CrimeFragment.newInstance(crimeId);
+//	}
 }

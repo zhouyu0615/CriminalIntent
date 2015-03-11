@@ -1,6 +1,5 @@
 package com.bignerd.criminalintent;
 
-
 import java.util.Date;
 import java.util.UUID;
 
@@ -10,16 +9,14 @@ public class Crime {
 	private String mTitle;
 	private Date mDate;
 	private boolean mSloved;
-	
-	
-	
+
 	public Crime() {
 		// TODO Auto-generated constructor stub
-		 mId=UUID.randomUUID();
-		 mDate=new Date();
+		mId = UUID.randomUUID();
+		mDate = new Date();
 	}
-	
-	 public Date getDate() {
+
+	public Date getDate() {
 		return mDate;
 	}
 
@@ -34,8 +31,6 @@ public class Crime {
 	public void setSloved(boolean sloved) {
 		mSloved = sloved;
 	}
-
-
 
 	public UUID getId() {
 		return mId;
@@ -52,7 +47,7 @@ public class Crime {
 	public void setTitle(String title) {
 		mTitle = title;
 	};
-	
+
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub

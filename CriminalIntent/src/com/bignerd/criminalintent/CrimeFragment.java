@@ -17,7 +17,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 
-public class CrimeFragment extends Fragment {
+public class CrimeFragment extends android.support.v4.app.Fragment {
 	public static final String EXTRA_CRIME_ID = "com.bignerd.criminalintent.crime_id";
 
 	private Crime mCrime;
