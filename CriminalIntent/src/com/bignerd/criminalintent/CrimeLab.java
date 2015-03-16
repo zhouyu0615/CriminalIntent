@@ -14,20 +14,19 @@ public class CrimeLab {
 	public CrimeLab(Context appContext) {
 		mAppContext = appContext;
 		mCrimes = new ArrayList<Crime>();
-		for (int i = 0; i < 100; i++) {
-			Crime tCrime =new Crime();
-			tCrime.setTitle("Crime #"+i);
-			tCrime.setSloved(i % 2==0);					
-			mCrimes.add(tCrime);
-		}
-
 
 	}
-	
 	
 	public ArrayList<Crime> getCrimes() {
 		return mCrimes;
 	}
+
+	public void addCrime(Crime c) {
+		mCrimes.add(c);
+
+	}
+
+
 
 	public Crime getCrime(UUID id) {
 
@@ -39,8 +38,6 @@ public class CrimeLab {
 		}
 		return null;
 	}
-
-
 
 	public static CrimeLab get(Context c) {
 		if (sCrimeLab == null) {
