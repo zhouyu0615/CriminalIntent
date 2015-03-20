@@ -12,7 +12,7 @@ import android.view.MenuItem;
 public class CrimeActivity extends SingleFragmentActivity {
 
 	@Override
-	protected Fragment createFragment() {
+	protected android.support.v4.app.Fragment createFragment() {
 		// TODO Auto-generated method stub
 		return null;
 	}

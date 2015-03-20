@@ -1,5 +1,7 @@
 package com.bignerd.criminalintent;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
@@ -8,33 +10,47 @@ import com.bignerd.criminalintent.R.string;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.ContactsContract.Contacts.Data;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NavUtils;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Switch;
 
 public class CrimeFragment extends android.support.v4.app.Fragment {
 	public static final String EXTRA_CRIME_ID = "com.bignerd.criminalintent.crime_id";
 
+	private static final String TAG="CrimeFragment";
+	private static final String DIALOG_IMAGE="image";
 	private Crime mCrime;
 	private EditText mTitleField;
 	private Button mDateButton;
 	private CheckBox mSlovedCheckBox;
+	private ImageButton mPhotoButton;
+	private ImageView mPhotoView;
+
 	private final static String DIALOG_DATE = "date";
 	private final static int REQUEST_DATE = 0;
+	private final static int REQUEST_PHOTO = 1;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -56,7 +72,6 @@ public class CrimeFragment extends android.support.v4.app.Fragment {
 		// TODO Auto-generated method stub
 
 		View v = inflater.inflate(R.layout.fragment_crime, container, false);
-
 
 		mTitleField = (EditText) v.findViewById(R.id.ed_crime_title);
 		mTitleField.setText(mCrime.getTitle());
@@ -114,6 +129,42 @@ public class CrimeFragment extends android.support.v4.app.Fragment {
 					}
 				});
 
+		mPhotoButton = (ImageButton) v.findViewById(R.id.crime_ImageButton);
+		mPhotoButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(getActivity(),
+						CrimeCameraActivity.class);
+				startActivityForResult(intent, REQUEST_PHOTO);
+			}
+		});
+		
+		PackageManager pm=getActivity().getPackageManager();
+		boolean hasACamera=pm.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY);
+		if (!hasACamera) {
+			mPhotoButton.setEnabled(false);
+		} 
+		
+		
+		mPhotoView=(ImageView) v.findViewById(R.id.crime_imageview);
+		mPhotoView.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Photo photo=mCrime.getPhoto();
+				if (photo==null) {
+					return;
+				}
+				
+				FragmentManager fm=getActivity().getSupportFragmentManager();
+				String pathString=getActivity()
+						.getFileStreamPath(photo.getFilename()).getAbsolutePath();
+				ImageFragment.newInstance(pathString).show(fm, DIALOG_IMAGE);
+				
+			}
+		});
+		
 		return v;
 
 	}
@@ -141,7 +192,37 @@ public class CrimeFragment extends android.support.v4.app.Fragment {
 
 			mCrime.setDate(date);
 			upViewDate();
-
+		}
+		if (requestCode==REQUEST_PHOTO) {
+			String filename=data.getStringExtra(
+					CrimeCameraFragment.EXTRA_PHOTO_FILENAME);
+			if (filename!=null) {
+				Log.d(TAG, "filename:"+filename);
+				
+				if (mCrime.hasAPhoto()) {
+					
+					String path=getActivity()
+							.getFileStreamPath(mCrime.getPhoto().getFilename()).getAbsolutePath();
+					Log.d(TAG,"crimefragment deletefilename: "+path);
+		 		
+				if (path!=null) {
+					
+					File file=new File(path);
+					if (file.exists()) {
+						file.delete();
+						mCrime.setPhoto(null);
+					}
+				}
+				
+				}	
+				
+				Photo photo= new Photo(filename);
+				mCrime.setPhoto(photo);
+				showPhoto();
+				
+				Log.d(TAG, "Crime:"+mCrime.getTitle()+"has a photo");
+				
+			}
 		}
 		// System.out.println("this is onActivityResult  RestulCode="+requestCode);
 
@@ -149,10 +230,47 @@ public class CrimeFragment extends android.support.v4.app.Fragment {
 
 	private void upViewDate() {
 
-		mDateButton.setText(mCrime.getDate().toString());
+		//mDateButton.setText(mCrime.getDate().toString());
+		mDateButton.setText(SimpleDateFormat.getDateTimeInstance().format(mCrime.getDate()));
 
 	}
+	
+	private void showPhoto()
+	{
+		Photo photo=mCrime.getPhoto();
+		BitmapDrawable bitmapDrawable=null;
+		if (photo!=null) {
+			String path=getActivity()
+					.getFileStreamPath(photo.getFilename()).getAbsolutePath();
+			bitmapDrawable=PictureUtils.getScaledDrawable(getActivity(), path);
+			
+			
+		}
+		mPhotoView.setImageDrawable(bitmapDrawable);
+		
+	}
 
+	@Override
+	public void onPause() {
+		// TODO Auto-generated method stub
 
+		super.onPause();
+		CrimeLab.get(getActivity()).saveCrimes();
+	}
+	
+	@Override
+	public void onStart() {
+		// TODO Auto-generated method stub
+		super.onStart();
+		showPhoto();
+	}
+	
+	@Override
+	public void onStop() {
+		// TODO Auto-generated method stub
+		PictureUtils.cleanImageView(mPhotoView);
+		super.onStop();
+		
+	}
 
 }
