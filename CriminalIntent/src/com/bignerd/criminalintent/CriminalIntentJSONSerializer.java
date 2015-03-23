@@ -23,7 +23,6 @@ public class CriminalIntentJSONSerializer {
 	public CriminalIntentJSONSerializer(Context context, String string) {
 		mContext = context;
 		mFilename = string;
-
 	}
 
 	public void saveCrimes(ArrayList<Crime> crimes) throws JSONException,

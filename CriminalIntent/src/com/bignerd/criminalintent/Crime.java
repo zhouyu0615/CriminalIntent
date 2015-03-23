@@ -15,12 +15,14 @@ public class Crime {
 	private Date mDate;
 	private boolean mSloved;
 	private Photo mPhoto;
+	private String mSuspect;
 
 	private static final String JSON_ID = "id";
 	private static final String JSON_TITLE = "title";
 	private static final String JSON_SLOVED = "sloved";
 	private static final String JSON_DATE = "date";
 	private static final String JSON_PHOTO = "photo";
+	private static final String JSON_SUSPECT = "suspect";
 
 	public Crime() {
 		// TODO Auto-generated constructor stub
@@ -41,6 +43,9 @@ public class Crime {
 		if (jsonObject.has(JSON_PHOTO)) {
 			mPhoto = new Photo(jsonObject.getJSONObject(JSON_PHOTO));
 
+		}
+		if (jsonObject.has(JSON_SUSPECT)) {
+			mSuspect=jsonObject.getString(JSON_SUSPECT);
 		}
 	}
 
@@ -88,14 +93,24 @@ public class Crime {
 		jsonObject.put(JSON_TITLE, mTitle);
 		jsonObject.put(JSON_SLOVED, mSloved);
 		jsonObject.put(JSON_DATE, mDate.getTime());
+		jsonObject.put(JSON_SUSPECT, mSuspect);
 
 		if (mPhoto != null) {
 			jsonObject.put(JSON_PHOTO, mPhoto.toJSON());
 
 		}
 
+
 		return jsonObject;
 
+	}
+
+	public String getSuspect() {
+		return mSuspect;
+	}
+
+	public void setSuspect(String suspect) {
+		mSuspect = suspect;
 	}
 
 	public Photo getPhoto() {

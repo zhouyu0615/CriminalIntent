@@ -7,6 +7,8 @@ import java.util.UUID;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import com.bignerd.criminalintent.R.string;
+
 import android.content.Context;
 import android.util.Log;
 
@@ -23,6 +25,9 @@ public class CrimeLab {
 
 	public CrimeLab(Context appContext) {
 		mAppContext = appContext;
+		
+	
+		
 		mJsonSerializer = new CriminalIntentJSONSerializer(mAppContext,
 				FILENAME);
 		try {
