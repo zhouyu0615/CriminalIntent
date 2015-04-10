@@ -25,9 +25,7 @@ public class CrimeLab {
 
 	public CrimeLab(Context appContext) {
 		mAppContext = appContext;
-		
-	
-		
+				
 		mJsonSerializer = new CriminalIntentJSONSerializer(mAppContext,
 				FILENAME);
 		try {
